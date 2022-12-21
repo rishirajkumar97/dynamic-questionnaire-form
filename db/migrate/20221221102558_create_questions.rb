@@ -18,7 +18,8 @@ class CreateQuestions < ActiveRecord::Migration[6.1]
     create_table :answers do |t|
       t.string :value
       t.integer :form_id
-      t.integer :question_id, referensces: 'questions', index: true, foreign_key: true, null: false
+      t.references :question, index: true, foreign_key: { to_table: 'questions' }
+      t.references :next_question, index: true, foreign_key: { to_table: 'questions' }
       t.timestamps
     end
 

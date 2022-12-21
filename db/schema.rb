@@ -12,13 +12,18 @@
 
 ActiveRecord::Schema.define(version: 2022_12_21_102558) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "answers", force: :cascade do |t|
     t.string "value"
     t.integer "form_id"
-    t.integer "question_id", null: false
+    t.integer "question_id"
+    t.integer "next_question_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["form_id", "question_id", "id"], name: "index_answers_on_form_id_and_question_id_and_id"
+    t.index ["next_question_id"], name: "index_answers_on_next_question_id"
     t.index ["question_id"], name: "index_answers_on_question_id"
   end
 

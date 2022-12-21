@@ -2,7 +2,7 @@
 #
 # Table name: questions
 #
-#  id                    :integer          not null, primary key
+#  id                    :bigint           not null, primary key
 #  additional_attributes :json
 #  answer_type           :integer          not null
 #  created_at            :datetime         not null
