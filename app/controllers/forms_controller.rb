@@ -9,6 +9,9 @@ class FormsController < ApplicationController
     }
   end
 
+  # Method to Recursively parse the answers and the sub questions/answers for the given question
+  # question - the current question
+  # answers - the answers array of hashes which has sub branching questions and answers
   def parse_qn_and_ans(question, answers)
     answers_new = []
     next_qns = []
@@ -61,7 +64,7 @@ class FormsController < ApplicationController
 
   def show
     params.require(%i[id])
-    render json: ActiveModelSerializers::SerializableResource.new(Form.find_by!(id: params[:id]))
+    render json: ActiveModelSerializers::SerializableResource.new(Form.find_by!(id: params[:id])).as_json
   end
 
   def destroy
