@@ -46,7 +46,10 @@ class FormsController < ApplicationController
     questions = [] 
     question = Question.create!(answer_type: forms_post_params[:questions_answers][:answer_type],form_id: form.id, name:  forms_post_params[:questions_answers][:name]) 
     parse_qn_and_ans(question, forms_post_params[:questions_answers][:answers])
-    render json: { created: }, status: :created
+
+    # Serialize the Form to Have proper Rendering
+    # Reload so that the referneces of the import are also taken into context for questions/answers
+    render json: ActiveModelSerializers::SerializableResource.new(form.reload).as_json, status: :created
     #TODO Create parsing of params and to return newly created Form JSON
   end
 
