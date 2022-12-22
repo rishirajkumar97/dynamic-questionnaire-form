@@ -1,6 +1,12 @@
 class FormsController < ApplicationController
   def index
-    #TODO Add Logic for Displaying All forms
+    forms = Form.all
+
+    # ToDO: Add Paginate via Paginary or any gem to automatic handling of Pagination and Link Generation
+    render json: {
+      items: ActiveModelSerializers::SerializableResource.new(Form.all).as_json,
+      count: forms.count 
+    }
   end
 
   def parse_qn_and_ans(question, answers)
@@ -54,7 +60,8 @@ class FormsController < ApplicationController
   end
 
   def show
-    #TODO Add Logic For Formatting and Rendering a single Form
+    params.require(%i[id])
+    render json: ActiveModelSerializers::SerializableResource.new(Form.find_by!(id: params[:id]))
   end
 
   def destroy
