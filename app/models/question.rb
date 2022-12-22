@@ -5,6 +5,7 @@
 #  id                    :bigint           not null, primary key
 #  additional_attributes :json
 #  answer_type           :integer          not null
+#  name                  :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  form_id               :integer          not null

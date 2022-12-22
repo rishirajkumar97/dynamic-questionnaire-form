@@ -17,6 +17,7 @@
 #  index_answers_on_question_id                     (question_id)
 #
 class Answer < ApplicationRecord
+    belongs_to :form, optional: true
     belongs_to :question , optional: true
-    belongs_to :next_question , :class_name => "Question"
+    belongs_to :next_question , :class_name => "Question", optional: true
 end

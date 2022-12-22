@@ -7,28 +7,35 @@ class FormsController < ApplicationController
     answers_new = []
     next_qns = []
 
-    # Base Condition to terminate Recursion
+    # Base Condition to terminate Recursion if no answers is found end and return
+    # Terminator Question i.e
     if answers.blank?
       return nil, nil
     else
       answers.each do |answer|
         # Create New Question if it has new Question as a Child based on the answer
-        next_qn = Question.new(answer_type: answer[:answer_type], additional_attributes: answer[:additional_attributes]) if answer[:answer_type].present?
-        next_qns.push(next_qn)
-        params = { value: answer[:value], question: question }
+        next_qn = Question.new(answer_type: answer.dig(:answer_type),
+        additional_attributes: answer[:additional_attributes],
+        form_id: question.form_id,
+        name: answer[:name]
+        ) if answer.dig(:answers).present?
+        next_qns.push(next_qn) if next_qn.present?
+        params = { value: answer[:value], question: question, form: question.form }
         # Assign Nnext Question if it has next_question available
-        params[:next_question]= next_qn if next_qn.present?
+        params[:next_question] = next_qn || nil
 
-        answers.push(Answer.new(params))
+        answers_new.push(Answer.new(params))
       end
+      # Further Enhance to Just use the next_qns and answers_new in a recursive array and import at the base case
+      # To research further if such complex linkings work on multiple branching in activerecord-import gem
       # Import the Next set of Sub Questions
       Question.import! next_qns
       # Import the List of Answers and then assign Current Question ID and Next Question ID
-      Answer.import! answers
+      Answer.import! answers_new
 
       # Recursivelly call parse_qn_and_ans for further questions
       answers.zip(next_qns).each do |answer_qn_pair|
-        parse_qn_and_ans(answer_qn_pair[1], answer_qn_pair[0][:answers])
+        parse_qn_and_ans(answer_qn_pair[1], answer_qn_pair[0].dig(:answers))
       end
     end
   end
@@ -37,20 +44,9 @@ class FormsController < ApplicationController
     post_params = forms_post_params
     form = Form.create!(post_params.except(:questions_answers))
     questions = [] 
-    post_params[:questions_answers].each |question|
-      qn = Question.new(
-        additional_attributes: question[:additional_attributes],
-        answer_type: question[:answer_type],
-      )
-      questions.push(qn)
-      question[:answers].each do |answer|
-        next_qn = Question.new(answer_type: answer[:answer_type], 
-        Answer.new(value: answer[:value], question: qn)
-      end
-    end
-
-    Question.import 
-    render json: , status: :created
+    question = Question.create!(answer_type: forms_post_params[:questions_answers][:answer_type],form_id: form.id, name:  forms_post_params[:questions_answers][:name]) 
+    parse_qn_and_ans(question, forms_post_params[:questions_answers][:answers])
+    render json: { created: }, status: :created
     #TODO Create parsing of params and to return newly created Form JSON
   end
 
