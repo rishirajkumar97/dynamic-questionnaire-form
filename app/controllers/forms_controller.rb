@@ -69,7 +69,7 @@ class FormsController < ApplicationController
 
   def destroy
     params.require(%i[id])
-    form = form.find_by!(id: params[:id])
+    form = Form.find_by!(id: params[:id])
     form.destroy!
     head :no_content
   end
