@@ -13,7 +13,7 @@ class CreateQuestions < ActiveRecord::Migration[6.1]
       t.timestamps
     end
 
-    add_index :questions, [:form_id, :id]
+    add_index :questions, %i[form_id id]
 
     create_table :answers do |t|
       t.string :value
@@ -23,6 +23,6 @@ class CreateQuestions < ActiveRecord::Migration[6.1]
       t.timestamps
     end
 
-    add_index :answers, [:form_id, :question_id, :id]
+    add_index :answers, %i[form_id question_id id]
   end
 end

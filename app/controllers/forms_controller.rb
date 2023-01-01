@@ -2,10 +2,10 @@ class FormsController < ApplicationController
   def index
     forms = Form.all
 
-    # ToDO: Add Paginate via Paginary or any gem to automatic handling of Pagination and Link Generation
+    # TODO: Add Paginate via Paginary or any gem to automatic handling of Pagination and Link Generation
     render json: {
       items: ActiveModelSerializers::SerializableResource.new(Form.all).as_json,
-      count: forms.count 
+      count: forms.count
     }
   end
 
@@ -19,15 +19,16 @@ class FormsController < ApplicationController
     # Base Condition to terminate Recursion if no answers is found end and return
     # Terminator Question i.e
     if answers.blank?
-      return nil, nil
+      [nil, nil]
     else
       answers.each do |answer|
         # Create New Question if it has new Question as a Child based on the answer
-        next_qn = Question.new(answer_type: answer.dig(:answer_type),
-        additional_attributes: answer[:additional_attributes],
-        form_id: question.form_id,
-        name: answer[:name]
-        ) if answer.dig(:answers).present?
+        if answer.dig(:answers).present?
+          next_qn = Question.new(answer_type: answer.dig(:answer_type),
+                                 additional_attributes: answer[:additional_attributes],
+                                 form_id: question.form_id,
+                                 name: answer[:name])
+        end
         next_qns.push(next_qn) if next_qn.present?
         params = { value: answer[:value], question: question, form: question.form }
         # Assign Nnext Question if it has next_question available
@@ -52,14 +53,15 @@ class FormsController < ApplicationController
   def create
     post_params = forms_post_params
     form = Form.create!(post_params.except(:questions_answers))
-    questions = [] 
-    question = Question.create!(answer_type: forms_post_params[:questions_answers][:answer_type],form_id: form.id, name:  forms_post_params[:questions_answers][:name]) 
+    questions = []
+    question = Question.create!(answer_type: forms_post_params[:questions_answers][:answer_type], form_id: form.id,
+                                name: forms_post_params[:questions_answers][:name])
     parse_qn_and_ans(question, forms_post_params[:questions_answers][:answers])
 
     # Serialize the Form to Have proper Rendering
     # Reload so that the referneces of the import are also taken into context for questions/answers
     render json: ActiveModelSerializers::SerializableResource.new(form.reload).as_json, status: :created
-    #TODO Create parsing of params and to return newly created Form JSON
+    # TODO: Create parsing of params and to return newly created Form JSON
   end
 
   def show
