@@ -39,6 +39,7 @@ group :development, :test do
   gem 'rubocop'
   gem 'shoulda-matchers', '~> 3.1'
   gem 'simplecov', '~> 0.18.5'
+  gem 'factory_bot_rails'
 end
 
 group :development do

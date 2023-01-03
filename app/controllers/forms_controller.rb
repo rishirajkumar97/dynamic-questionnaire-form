@@ -24,7 +24,7 @@ class FormsController < ApplicationController
       answers.each do |answer|
         # Create New Question if it has new Question as a Child based on the answer
         if answer.dig(:answers).present?
-          next_qn = Question.new(answer_type: answer.dig(:answer_type),
+          next_qn = Question.new(answer_type: answer.dig(:answer_type).to_i,
                                  additional_attributes: answer[:additional_attributes],
                                  form_id: question.form_id,
                                  name: answer[:name])
@@ -54,7 +54,7 @@ class FormsController < ApplicationController
     post_params = forms_post_params
     form = Form.create!(post_params.except(:questions_answers))
     questions = []
-    question = Question.create!(answer_type: forms_post_params[:questions_answers][:answer_type], form_id: form.id,
+    question = Question.create!(answer_type: forms_post_params[:questions_answers][:answer_type].to_i, form_id: form.id,
                                 name: forms_post_params[:questions_answers][:name])
     parse_qn_and_ans(question, forms_post_params[:questions_answers][:answers])
 
