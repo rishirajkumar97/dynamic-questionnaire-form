@@ -9,27 +9,27 @@ RSpec.describe FormsController, type: :controller do
   let(:form) { double(:form, form_mock) }
   let(:post_params) do
     {
-      "name": "Test Form New",
-      "description": "Test Description",
+      "name": 'Test Form New',
+      "description": 'Test Description',
       "form_data": {
-          "name": "Test QN 1",
-          "answer_type": 1.to_i,
-          "answers": [
+        "name": 'Test QN 1',
+        "answer_type": 1.to_i,
+        "answers": [
+          {
+            "value": 'test Child',
+            "name": 'Test Qn 0 Value',
+            "answer_type": 1.to_i,
+            "answers": [
               {
-              "value": "test Child",
-              "name": "Test Qn 0 Value",
-              "answer_type": 1.to_i,
-              "answers": [
-              {
-              "value": "Test Sub Child",
-              "name": "Test Qn Sub Child Value",
-              "answer_type": 1.to_i
+                "value": 'Test Sub Child',
+                "name": 'Test Qn Sub Child Value',
+                "answer_type": 1.to_i
               }
-              ]
+            ]
           }
-          ]
+        ]
       }
-  }
+    }
   end
 
   # TODO: Form Create Spec for #create method
@@ -40,7 +40,7 @@ RSpec.describe FormsController, type: :controller do
       it 'returns newly created form' do
         post :create, params: post_params.as_json
         expect(response.status).to eq 201
-        form_id = JSON.parse(response.body)["id"]
+        form_id = JSON.parse(response.body)['id']
         form = Form.find_by(id: form_id)
         # Assert newly created question count and answer count
         expect(form.questions.count).to eq(2)
