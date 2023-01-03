@@ -6,6 +6,7 @@ class FormSerializer < ActiveModel::Serializer
              :description,
              :answers,
              :questions,
+             :start_question_id,
              :created_at,
              :updated_at
 
