@@ -10,37 +10,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_221_222_172_424) do
+ActiveRecord::Schema.define(version: 2023_01_03_104322) do
+
   # These are extensions that must be enabled in order to support this database
-  enable_extension 'plpgsql'
+  enable_extension "plpgsql"
 
-  create_table 'answers', force: :cascade do |t|
-    t.string 'value'
-    t.integer 'form_id'
-    t.integer 'question_id'
-    t.integer 'next_question_id'
-    t.datetime 'created_at', precision: 6, null: false
-    t.datetime 'updated_at', precision: 6, null: false
-    t.index %w[form_id question_id id], name: 'index_answers_on_form_id_and_question_id_and_id'
-    t.index ['next_question_id'], name: 'index_answers_on_next_question_id'
-    t.index ['question_id'], name: 'index_answers_on_question_id'
+  create_table "answers", force: :cascade do |t|
+    t.string "value"
+    t.integer "form_id"
+    t.integer "question_id"
+    t.integer "next_question_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["form_id", "question_id", "id"], name: "index_answers_on_form_id_and_question_id_and_id"
+    t.index ["next_question_id"], name: "index_answers_on_next_question_id"
+    t.index ["question_id"], name: "index_answers_on_question_id"
   end
 
-  create_table 'forms', force: :cascade do |t|
-    t.string 'name', null: false
-    t.string 'description', null: false
-    t.datetime 'created_at', precision: 6, null: false
-    t.datetime 'updated_at', precision: 6, null: false
+  create_table "forms", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "description", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "start_question_id"
   end
 
-  create_table 'questions', force: :cascade do |t|
-    t.integer 'form_id', null: false
-    t.integer 'answer_type', null: false
-    t.json 'additional_attributes'
-    t.datetime 'created_at', precision: 6, null: false
-    t.datetime 'updated_at', precision: 6, null: false
-    t.string 'name'
-    t.index %w[form_id id], name: 'index_questions_on_form_id_and_id'
-    t.index ['form_id'], name: 'index_questions_on_form_id'
+  create_table "questions", force: :cascade do |t|
+    t.integer "form_id", null: false
+    t.integer "answer_type", null: false
+    t.json "additional_attributes"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "name"
+    t.index ["form_id", "id"], name: "index_questions_on_form_id_and_id"
+    t.index ["form_id"], name: "index_questions_on_form_id"
   end
+
 end

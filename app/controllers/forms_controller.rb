@@ -56,6 +56,7 @@ class FormsController < ApplicationController
     questions = []
     question = Question.create!(answer_type: forms_post_params[:questions_answers][:answer_type].to_i, form_id: form.id,
                                 name: forms_post_params[:questions_answers][:name])
+    Form.update!(start_question_id: question.id)
     parse_qn_and_ans(question, forms_post_params[:questions_answers][:answers])
 
     # Serialize the Form to Have proper Rendering
